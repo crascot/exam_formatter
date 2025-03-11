@@ -1,0 +1,69 @@
+@import url("../../styles/pallete.less");
+@import url("../../styles/font-size.less");
+
+.exam-questions {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ gap: 12px;
+
+ h1 {
+  text-align: center;
+ }
+
+ &-content {
+  transform: translateY(-50px);
+  opacity: 0;
+  transition:
+   transform 0.5s ease-out,
+   opacity 0.5s ease-out;
+  width: 720px;
+
+  &-show {
+   transform: translateY(0);
+   opacity: 1;
+  }
+
+  &-block {
+   background-color: @pallete-white;
+   border-radius: 10px 10px 0 0;
+   padding: 8px 16px;
+
+   h2 {
+    background-color: @pallete-background;
+    border: 1px solid @pallete-white;
+    border-radius: 10px 10px 0 0;
+    margin: -8px -16px;
+    padding: 8px 16px;
+   }
+
+   ul {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    li h4 {
+     color: @pallete-background !important;
+    }
+   }
+
+   h2 {
+    text-align: center;
+   }
+  }
+
+  button {
+   width: 100%;
+   height: 45px;
+   border: none;
+   background: @pallete-green;
+   color: @pallete-white;
+   font-size: @h4;
+   font-weight: 500;
+   border-radius: 0 0 10px 10px;
+   cursor: pointer;
+  }
+ }
+}

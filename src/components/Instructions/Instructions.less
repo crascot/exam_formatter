@@ -1,0 +1,35 @@
+@import url("../../styles/pallete.less");
+
+.instructions {
+ position: fixed;
+ bottom: 30px;
+ right: 30px;
+
+ @media (width<=400px) {
+  width: 90%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+ }
+
+ &-block {
+  cursor: pointer;
+  padding: 5px 15px;
+  background-color: @pallete-white;
+  border-radius: 10px;
+  color: @pallete-background;
+  transition: background-color 0.4s;
+  border: 1px solid @pallete-background;
+
+  &:hover {
+   transition: background-color 0.4s;
+   background-color: @pallete-background;
+   border: 1px solid @pallete-white;
+   color: @pallete-white;
+  }
+
+  h3 {
+   color: inherit !important;
+  }
+ }
+}

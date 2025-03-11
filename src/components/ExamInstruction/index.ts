@@ -1,0 +1,1 @@
+export { ExamInstruction } from "./ExamInstruction";

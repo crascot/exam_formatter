@@ -1,0 +1,36 @@
+@import url("../../styles/pallete.less");
+
+.modal {
+ width: 100vw;
+ height: 100vh;
+ position: fixed;
+ background-color: @pallete-modal-color;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ z-index: 10000;
+
+ &-inner {
+  position: relative;
+  display: flex;
+  max-width: 70%;
+  width: 100%;
+  background-color: @pallete-white;
+  border-radius: 10px;
+
+  &-close {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   cursor: pointer;
+   width: 40px;
+   height: 40px;
+   background-color: @pallete-white;
+   position: absolute;
+   right: -15px;
+   top: -15px;
+   border-radius: 50px;
+   font-weight: bold;
+  }
+ }
+}

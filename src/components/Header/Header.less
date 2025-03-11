@@ -1,0 +1,35 @@
+@import url("../../styles/pallete.less");
+@import url("../../styles/font-size.less");
+
+.header {
+ display: flex;
+ justify-content: center;
+ flex-wrap: wrap;
+ gap: 30px;
+ padding: 16px;
+ margin-bottom: 32px;
+ background-color: @pallete-beige;
+
+ a {
+  font-size: @h4;
+  border: 1px solid @pallete-gray;
+  background-color: @pallete-background;
+  color: @pallete-white;
+  padding: 5px 10px;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+
+  &:hover {
+   border: 1px solid @pallete-gray;
+   background-color: @pallete-white;
+   color: @pallete-gray;
+   transition: background-color 0.3s;
+  }
+ }
+
+ &-current {
+  border: 1px solid @pallete-gray;
+  background-color: @pallete-white !important;
+  color: @pallete-gray !important;
+ }
+}
