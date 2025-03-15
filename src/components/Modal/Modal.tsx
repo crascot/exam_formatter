@@ -10,9 +10,6 @@ export const Modal = ({ children, onClick }: ModalType) => {
  return (
   <div className="modal" onClick={onClick}>
    <div className="modal-inner" onClick={event => event.stopPropagation()}>
-    <div className="modal-inner-close" onClick={onClick}>
-     X
-    </div>
     {children}
    </div>
   </div>

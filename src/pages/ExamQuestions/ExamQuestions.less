@@ -30,12 +30,34 @@
    border-radius: 10px 10px 0 0;
    padding: 8px 16px;
 
+   &-difficult {
+    display: flex;
+    gap: 14px;
+    margin: 14px 0;
+    padding: 30px;
+
+    &-current {
+     color: @pallete-green !important;
+     background-color: @pallete-white !important;
+     transition: 0.4s;
+    }
+
+    button {
+     border-radius: 10px 10px 5px 5px !important;
+    }
+   }
+
    h2 {
     background-color: @pallete-background;
     border: 1px solid @pallete-white;
     border-radius: 10px 10px 0 0;
     margin: -8px -16px;
     padding: 8px 16px;
+   }
+
+   h3 {
+    color: @pallete-background !important;
+    margin-top: 14px;
    }
 
    ul {

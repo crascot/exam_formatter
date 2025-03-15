@@ -7,7 +7,12 @@ type InputProps = InputHTMLAttributes<HTMLInputElement>;
 export const InputFile = ({ onChange }: InputProps) => {
  return (
   <div className="input-file">
-   <input type="file" accept=".docx" id="imageInput" onChange={onChange} />
+   <input
+    type="file"
+    accept=".txt,.docx,.pdf"
+    id="imageInput"
+    onChange={onChange}
+   />
    <label htmlFor="imageInput">
     <UploadFile />
     Загрузить файл
