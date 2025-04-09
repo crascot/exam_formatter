@@ -7,34 +7,16 @@ import {
  TextRun,
 } from "docx";
 import { saveAs } from "file-saver";
-import { Difficulty, ExamType, Question } from "../../../types/ExamTypes";
+import { ExamType } from "../../../types/ExamTypes";
+import { generateTickets } from "../../../utils/generateTickets";
 
 const defaultRunOptions: IRunOptions = {
  font: "Times New Roman",
  size: 28,
 };
 
-export const generateWordFile = async (
- content: ExamType,
- difficult: Difficulty,
- count: number = 2,
-) => {
- const filteredQuestions = content.questions.filter(
-  q => q.difficulty === difficult,
- );
-
- const generateTickets = (
-  questions: Question[],
-  questionsPerTicket: number,
- ) => {
-  const tickets: Question[][] = [];
-  for (let i = 0; i < questions.length; i += questionsPerTicket) {
-   tickets.push(questions.slice(i, i + questionsPerTicket));
-  }
-  return tickets;
- };
-
- const tickets = generateTickets(filteredQuestions, count);
+export const generateWordFile = async (content: ExamType) => {
+ const tickets = generateTickets(content.questions, content.config);
 
  const doc = new Document({
   sections: tickets.map((ticket, ticketIndex) => ({
@@ -149,7 +131,7 @@ export const generateWordFile = async (
  Packer.toBlob(doc).then(blob => {
   saveAs(
    blob,
-   `${content.department}_${content.course}_exam_${difficult}.docx`,
+   `${content.department}_${content.course}_exam_${new Date().toISOString()}.docx`,
   );
  });
 };

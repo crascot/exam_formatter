@@ -4,28 +4,44 @@ import { readDocxFile } from "./readFiles/readDocx";
 import { readPdfFile } from "./readFiles/readPdf";
 import { readTxtFile } from "./readFiles/readTxt";
 
+// eslint-disable-next-line no-unused-vars
+const readerMap: Record<string, (file: File) => Promise<string>> = {
+ [FileTypeEnum.DOCX]: readDocxFile,
+ [FileTypeEnum.PDF]: readPdfFile,
+ [FileTypeEnum.TXT]: readTxtFile,
+};
+
 export const handleFileChange = async (
  event: ChangeEvent<HTMLInputElement>,
  setState: Dispatch<SetStateAction<any>>,
  // eslint-disable-next-line no-unused-vars
- parse: (data: any) => void,
+ parse: (data: string, prev?: any) => any,
 ) => {
- const file = event.target.files?.[0];
- if (file) {
-  if (file.type === FileTypeEnum.DOCX) {
-   readDocxFile(file).then(data => {
-    setState(parse(data));
-   });
-  } else if (file.type === FileTypeEnum.PDF) {
-   readPdfFile(file).then(data => {
-    setState(parse(data));
-   });
-  } else if (file.type === FileTypeEnum.TXT) {
-   readTxtFile(file).then(data => {
-    setState(parse(data));
-   });
+ const files = Array.from(event.target.files || []);
+
+ if (files.length === 0) return;
+
+ const parsedFiles: string[] = [];
+
+ for (const file of files) {
+  const reader = readerMap[file.type];
+  if (reader) {
+   try {
+    const text = await reader(file);
+    parsedFiles.push(text);
+   } catch (err) {
+    console.error(`Ошибка чтения файла ${file.name}`, err);
+   }
   } else {
-   alert("Неподдерживаемый файл");
+   alert(`Неподдерживаемый тип файла: ${file.name}`);
   }
  }
+
+ setState((prev: any) => {
+  let result = prev;
+  for (const fileText of parsedFiles) {
+   result = parse(fileText, result);
+  }
+  return result;
+ });
 };

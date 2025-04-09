@@ -14,6 +14,8 @@ module.exports = {
   static: "./dist",
   hot: true,
   historyApiFallback: true,
+  open: true,
+  port: 8080,
  },
  module: {
   rules: [

@@ -9,7 +9,8 @@ export const InputFile = ({ onChange }: InputProps) => {
   <div className="input-file">
    <input
     type="file"
-    accept=".txt,.docx,.pdf"
+    multiple
+    accept=".docx,.pdf,.txt"
     id="imageInput"
     onChange={onChange}
    />
