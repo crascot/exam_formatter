@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes } from "react";
+import { InputHTMLAttributes } from "react";
 import UploadFile from "../../icons/svg/upload.svg";
 import "./InputFile.less";
 
@@ -10,7 +10,7 @@ export const InputFile = ({ onChange }: InputProps) => {
    <input
     type="file"
     multiple
-    accept=".docx,.pdf,.txt"
+    accept=".doc,.docx,.pdf,.txt"
     id="imageInput"
     onChange={onChange}
    />

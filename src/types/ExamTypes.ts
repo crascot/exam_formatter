@@ -18,6 +18,7 @@ export type ExamType = {
 };
 
 export type Question = {
+ images: string[];
  question: string;
  answers: string[];
  difficulty: Difficulty;

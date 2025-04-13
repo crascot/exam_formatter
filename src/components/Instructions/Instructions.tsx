@@ -1,7 +1,10 @@
 import "./Instructions.less";
-import { downloadFile } from "../../utils/download";
 
-export const Instructions = () => {
+type InstructionsType = {
+ downloadFile: () => Promise<void>;
+};
+
+export const Instructions = ({ downloadFile }: InstructionsType) => {
  return (
   <div className="instructions">
    <div className="instructions-block" onClick={downloadFile}>

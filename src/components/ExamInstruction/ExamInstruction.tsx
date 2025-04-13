@@ -1,6 +1,6 @@
+import { downloadExam } from "../../utils/download/downloadExam";
 import { Instructions } from "../Instructions";
-import "./ExamInstruction.less";
 
 export const ExamInstruction = () => {
- return <Instructions />;
+ return <Instructions downloadFile={downloadExam} />;
 };

@@ -5,4 +5,6 @@ export enum FileTypeEnum {
  TXT = "text/plain",
  // eslint-disable-next-line no-unused-vars
  PDF = "application/pdf",
+ // eslint-disable-next-line no-unused-vars
+ DOC = "application/msword",
 }
