@@ -87,5 +87,38 @@
    border-radius: 0 0 10px 10px;
    cursor: pointer;
   }
+
+  &-ticket-count {
+   padding: 8px 16px;
+   display: flex;
+   align-items: center;
+   gap: 13px;
+   margin: 0 auto;
+   color: @pallete-white;
+   border-left: 1px solid @pallete-white;
+   border-right: 1px solid @pallete-white;
+
+   input {
+    flex: 1;
+    outline: none;
+    border: none;
+    font-size: @h5;
+
+    height: 30px;
+    border-radius: 10px;
+    border: 3px solid @pallete-background;
+    padding-left: 5px;
+    transition: 0.4s;
+
+    &:focus {
+     transition: 0.4s;
+     border: 3px solid @pallete-gray;
+    }
+
+    &::placeholder {
+     font-size: @h5;
+    }
+   }
+  }
  }
 }

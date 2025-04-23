@@ -2,17 +2,16 @@ import { ChangeEvent, useState } from "react";
 import "./TestQuestion.less";
 import { Container } from "../../components/Container";
 import { InputFile } from "../../components/InputFile";
-import { handleFileChange } from "../../utils/handleFileChange";
-import { parseTest } from "./utils/parser";
 import { TestType } from "./types/TestTypes";
 import { motion } from "framer-motion";
 import { TestInstructions } from "../../components/TestInstruction";
+import { handleFileUpload } from "../../utils/handleFileUpload";
 
 export const TestQuestion = () => {
  const [content, setContent] = useState<TestType | null>(null);
  const [disabledIndexes, setDisabledIndexes] = useState<number[]>([]);
  const inputFileOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-  handleFileChange(e, setContent, parseTest);
+  handleFileUpload(e, setContent);
  };
 
  const filteredContent = content

@@ -15,6 +15,8 @@ export type ExamType = {
  lesson: string;
  questions: Question[];
  config: TicketConfig;
+ startAt: string | null;
+ endAt: string | null;
 };
 
 export type Question = {

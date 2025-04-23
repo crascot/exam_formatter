@@ -2,19 +2,21 @@ import { InputHTMLAttributes } from "react";
 import UploadFile from "../../icons/svg/upload.svg";
 import "./InputFile.less";
 
-type InputProps = InputHTMLAttributes<HTMLInputElement>;
+type InputProps = InputHTMLAttributes<HTMLInputElement> & {
+ id: string;
+};
 
-export const InputFile = ({ onChange }: InputProps) => {
+export const InputFile = ({ id, onChange }: InputProps) => {
  return (
   <div className="input-file">
    <input
+    id={id}
     type="file"
     multiple
     accept=".doc,.docx,.pdf,.txt"
-    id="imageInput"
     onChange={onChange}
    />
-   <label htmlFor="imageInput">
+   <label htmlFor={id}>
     <UploadFile />
     Загрузить файл
    </label>

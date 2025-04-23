@@ -15,15 +15,13 @@
  "description": "",
  "dependencies": {
   "docx": "^9.2.0",
-  "fast-xml-parser": "^5.2.0",
   "file-saver": "^2.0.5",
   "framer-motion": "^12.4.10",
-  "jszip": "^3.10.1",
   "mammoth": "^1.9.0",
-  "pdfjs-dist": "^2.16.105",
   "react": "^19.0.0",
   "react-dom": "^19.0.0",
-  "react-router-dom": "^7.2.0"
+  "react-router-dom": "^7.2.0",
+  "uuid": "^11.1.0"
  },
  "devDependencies": {
   "@babel/core": "^7.26.9",

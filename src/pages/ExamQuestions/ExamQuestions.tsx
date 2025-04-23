@@ -1,20 +1,45 @@
-import { ChangeEvent, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import "./ExamQuestions.less";
 import { generateWordFile } from "./utils/generateWordFile";
 import { Container } from "../../components/Container";
-import { InputFile } from "../../components/InputFile";
-import { ExamInstruction } from "../../components/ExamInstruction";
-import { motion } from "framer-motion";
-import { handleFileChange } from "../../utils/handleFileChange";
-import { parseExam } from "./utils/parser";
-import { ExamType } from "../../types/ExamTypes";
+import { ExamType, Question } from "../../types/ExamTypes";
+import { Form } from "../../components/Form/Form";
+
+const initialExam: ExamType = {
+ department: "",
+ course: 0,
+ lesson: "",
+ questions: [],
+ config: { Легкий: 0, Средний: 0, Сложный: 0 },
+ startAt: null,
+ endAt: null,
+};
 
 export const ExamQuestions = () => {
- const [content, setContent] = useState<ExamType | null>(null);
+ const [content, setContent] = useState<ExamType>(initialExam);
  const [disabledIndexes, setDisabledIndexes] = useState<number[]>([]);
- const inputFileOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-  handleFileChange(e, setContent, parseExam);
- };
+
+ const [ticketCount, setTicketCount] = useState<number>(1);
+
+ const maxTickets = useMemo(() => {
+  const difficulties = ["Легкий", "Средний", "Сложный"] as const;
+
+  const categorized = Object.fromEntries(
+   difficulties.map(d => [d, []]),
+  ) as Record<string, Question[]>;
+
+  for (const q of content.questions) {
+   categorized[q.difficulty].push(q);
+  }
+
+  const result = difficulties
+   .filter(d => content.config[d] > 0)
+   .map(d => Math.floor(categorized[d].length / content.config[d]));
+
+  return result.length ? Math.min(...result) : 0;
+ }, [content]);
 
  const filteredContent = content
   ? {
@@ -30,16 +55,16 @@ export const ExamQuestions = () => {
    return;
   }
 
-  generateWordFile(filteredContent);
+  generateWordFile(filteredContent, ticketCount);
  };
 
  return (
   <Container>
    <div className="exam-questions">
-    <h1>Загрузите свой word документ с экзаменационными вопросами</h1>
-    <InputFile onChange={inputFileOnChange} />
+    <h1>Заполните форму и загрузите файлы с вопросами</h1>
+    <Form state={content} setState={setContent} />
 
-    {content ? (
+    {JSON.stringify(content) !== JSON.stringify(initialExam) ? (
      <motion.div
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
@@ -55,10 +80,13 @@ export const ExamQuestions = () => {
         {content.questions.map((e, index) => {
          const isDisabled = disabledIndexes.includes(index);
          return (
-          <li
-           className="exam-questions-content-block-list"
-           key={`${e}${e.question}`}
-          >
+          <li className="exam-questions-content-block-list" key={uuidv4()}>
+           <p>{e.difficulty}</p>
+           {e.images.length
+            ? e.images.map(image => (
+               <img style={{ width: 100 }} src={image} key={image} />
+              ))
+            : ""}
            <h4
             className={`${isDisabled ? "exam-questions-content-block-list-question-disabled" : ""} exam-questions-content-block-list-question`}
            >
@@ -81,6 +109,25 @@ export const ExamQuestions = () => {
         })}
        </ul>
       </div>
+      {ticketCount !== Infinity ? (
+       <div className="exam-questions-content-ticket-count">
+        <h5>Количество билетов (макс. {maxTickets}):</h5>
+        <input
+         type="number"
+         min={1}
+         max={maxTickets}
+         value={ticketCount}
+         onChange={e =>
+          setTicketCount(
+           Math.min(maxTickets, Math.max(1, Number(e.target.value))),
+          )
+         }
+         style={{ marginLeft: 8, width: 80 }}
+        />
+       </div>
+      ) : (
+       ""
+      )}
       <button
        className="exam-questions-content-generate-file"
        onClick={generateFile}
@@ -92,7 +139,6 @@ export const ExamQuestions = () => {
      ""
     )}
    </div>
-   <ExamInstruction />
   </Container>
  );
 };

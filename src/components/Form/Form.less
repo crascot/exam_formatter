@@ -1,0 +1,57 @@
+@import url("../../styles/pallete.less");
+@import url("../../styles/font-size.less");
+
+.form {
+ max-width: 720px;
+ width: 100%;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ gap: 12px;
+
+ &-label {
+  width: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  input {
+   width: inherit;
+   height: 30px;
+   border-radius: 10px;
+   outline: none;
+   border: 3px solid @pallete-background;
+   padding-left: 10px;
+   font-size: @p;
+   color: @pallete-background;
+   transition: 0.4s;
+
+   &::placeholder {
+    color: @pallete-background;
+   }
+
+   &:focus {
+    transition: 0.4s;
+    border: 3px solid @pallete-gray;
+   }
+  }
+ }
+
+ &-upload-files {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  @media (width<=768px) {
+   flex-direction: column;
+   width: max-content;
+   gap: 13px;
+  }
+
+  &-label {
+   display: flex;
+   flex-direction: column;
+   gap: 5px;
+  }
+ }
+}

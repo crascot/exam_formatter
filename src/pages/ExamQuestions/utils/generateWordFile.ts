@@ -15,8 +15,15 @@ const defaultRunOptions: IRunOptions = {
  size: 28,
 };
 
-export const generateWordFile = async (content: ExamType) => {
- const tickets = generateTickets(content.questions, content.config);
+export const generateWordFile = async (
+ content: ExamType,
+ desiredTicketsCount?: number,
+) => {
+ const tickets = generateTickets(
+  content.questions,
+  content.config,
+  desiredTicketsCount,
+ );
 
  const doc = new Document({
   sections: tickets.map((ticket, ticketIndex) => ({

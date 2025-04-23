@@ -10,35 +10,48 @@ const shuffleArray = <T>(array: T[]): T[] => {
 export const generateTickets = (
  questions: Question[],
  config: TicketConfig,
+ count?: number,
 ): Question[][] => {
+ const difficultyLevels: Difficulty[] = ["Легкий", "Средний", "Сложный"];
+
  const categorizedQuestions: Record<Difficulty, Question[]> = {
   Легкий: [],
   Средний: [],
   Сложный: [],
  };
 
- const shuffleQuestion = shuffleArray(questions);
+ const shuffledQuestions = shuffleArray(questions);
 
- shuffleQuestion.forEach(question => {
+ for (const question of shuffledQuestions) {
   categorizedQuestions[question.difficulty].push(question);
- });
+ }
+
+ const maxTicketsPerDifficulty = difficultyLevels
+  .filter(difficulty => config[difficulty] > 0)
+  .map(difficulty => {
+   const available = categorizedQuestions[difficulty].length;
+   const perTicket = config[difficulty];
+   return Math.floor(available / perTicket);
+  });
+
+ const totalTickets =
+  maxTicketsPerDifficulty.length > 0
+   ? Math.max(Math.min(...maxTicketsPerDifficulty), 0)
+   : 0;
+
+ const ticketsToGenerate = count ? Math.min(count, totalTickets) : totalTickets;
 
  const tickets: Question[][] = [];
- const totalTickets = Math.min(
-  ...Object.keys(config).map(key =>
-   Math.floor(
-    categorizedQuestions[key as Difficulty].length / config[key as Difficulty],
-   ),
-  ),
- );
 
- for (let i = 0; i < totalTickets; i++) {
+ for (let i = 0; i < ticketsToGenerate; i++) {
   const ticket: Question[] = [];
 
-  for (const difficulty of Object.keys(config) as Difficulty[]) {
-   ticket.push(
-    ...categorizedQuestions[difficulty].splice(0, config[difficulty]),
-   );
+  for (const difficulty of difficultyLevels) {
+   const perTicket = config[difficulty];
+
+   if (perTicket > 0) {
+    ticket.push(...categorizedQuestions[difficulty].splice(0, perTicket));
+   }
   }
 
   tickets.push(ticket);
