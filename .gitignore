@@ -1,23 +1,73 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
-
-# testing
-/coverage
-
-# production
+# General
 /build
-
-# misc
+*.log
 .DS_Store
-.env.local
+/.idea
+node_modules
+
+# Client Flutter
+client/dist
+client/node_modules
+client/build
+
+client/logs
+client/npm-debug.log*
+client/pnpm-debug.log*
+client/yarn-debug.log*
+client/yarn-error.log*
+client/lerna-debug.log*
+
+client//coverage
+client//.nyc_output
+
+client/.project
+client/.classpath
+client/.c9/
+client/*.launch
+client/.settings/
+client/*.sublime-workspace
+
+# Server NestJS
+
+server/dist
+server/node_modules
+server/build
+
+server/logs
+server/npm-debug.log*
+server/pnpm-debug.log*
+server/yarn-debug.log*
+server/yarn-error.log*
+server/lerna-debug.log*
+
+server//coverage
+server//.nyc_output
+
+server/.project
+server/.classpath
+server/.c9/
+server/*.launch
+server/.settings/
+server/*.sublime-workspace
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+.env
 .env.development.local
 .env.test.local
 .env.production.local
+.env.local
 
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+.temp
+.tmp
+
+pids
+*.pid
+*.seed
+*.pid.lock
+
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
