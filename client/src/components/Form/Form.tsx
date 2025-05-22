@@ -75,6 +75,14 @@ export const Form = ({ state, setState, showTestLabels = false }: FormType) => {
    });
   };
 
+ const countQuestions = (difficulty: DifficultyEnum) => {
+  const currentQuestions = state.questions.filter(
+   question => question.difficulty === difficulty,
+  );
+
+  return currentQuestions.length;
+ };
+
  return (
   <div className="form">
    {showTestLabels && (
@@ -182,27 +190,36 @@ export const Form = ({ state, setState, showTestLabels = false }: FormType) => {
    )}
    {!showTestLabels ? (
     <div className="form-upload-files">
-     <label className="form-upload-files-label">
-      <h5>Лёгкие вопросы</h5>
-      <InputFile
-       id={DifficultyEnum.EASY}
-       onChange={e => inputFileOnChange(e, DifficultyEnum.EASY)}
-      />
-     </label>
-     <label className="form-upload-files-label">
-      <h5>Средние вопросы</h5>
-      <InputFile
-       id={DifficultyEnum.MIDDLE}
-       onChange={e => inputFileOnChange(e, DifficultyEnum.MIDDLE)}
-      />
-     </label>
-     <label className="form-upload-files-label">
-      <h5>Сложные вопросы</h5>
-      <InputFile
-       id={DifficultyEnum.HARD}
-       onChange={e => inputFileOnChange(e, DifficultyEnum.HARD)}
-      />
-     </label>
+     <div>
+      <label className="form-upload-files-label">
+       <h5>Лёгкие вопросы</h5>
+       <InputFile
+        id={DifficultyEnum.EASY}
+        onChange={e => inputFileOnChange(e, DifficultyEnum.EASY)}
+       />
+      </label>
+      <h4>Кол-во: {countQuestions(DifficultyEnum.EASY)}</h4>
+     </div>
+     <div>
+      <label className="form-upload-files-label">
+       <h5>Средние вопросы</h5>
+       <InputFile
+        id={DifficultyEnum.MIDDLE}
+        onChange={e => inputFileOnChange(e, DifficultyEnum.MIDDLE)}
+       />
+      </label>
+      <h4>Кол-во: {countQuestions(DifficultyEnum.MIDDLE)}</h4>
+     </div>
+     <div>
+      <label className="form-upload-files-label">
+       <h5>Сложные вопросы</h5>
+       <InputFile
+        id={DifficultyEnum.HARD}
+        onChange={e => inputFileOnChange(e, DifficultyEnum.HARD)}
+       />
+      </label>
+      <h4>Кол-во: {countQuestions(DifficultyEnum.HARD)}</h4>
+     </div>
     </div>
    ) : (
     <label className="form-upload-files-label">

@@ -115,7 +115,6 @@ export const getExamResults = (examId: number) => {
    isCurrect: number;
   }>;
 
-  // Группируем по question_id
   const groupedAnswers: Record<
    number,
    {
@@ -197,6 +196,18 @@ export const getExamForStudents = (
  };
 };
 
+export const getExamTime = (examId: number) => {
+ const time = db
+  .prepare(`SELECT startAt, endAt FROM exams WHERE id = ?`)
+  .get(examId) as { startAt: string; endAt: string } | null;
+
+ if (!time) {
+  return null;
+ }
+
+ return { startAt: time.startAt, endAt: time.endAt };
+};
+
 export const createExam = (exam: ExamType): number => {
  const result = db
   .prepare(
@@ -271,7 +282,6 @@ export const submitExamAnswers = ({
     SELECT text, isCurrect FROM answers WHERE question_id = ?
   `);
 
- // Группируем пользовательские ответы по questionId
  const groupedByQuestion = new Map<number, string[]>();
  for (const { questionId, answerText } of answers) {
   if (!groupedByQuestion.has(questionId)) {
@@ -290,7 +300,6 @@ export const submitExamAnswers = ({
 
   const userTexts = userAnswers.map(normalize).sort();
 
-  // "Всё или ничего" стратегия
   const isAllCorrect =
    JSON.stringify(userTexts) === JSON.stringify(correctTexts);
 

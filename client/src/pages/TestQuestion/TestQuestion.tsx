@@ -124,17 +124,26 @@ export const TestQuestion = () => {
           const isDisabled = disabledIndexes.includes(index);
           return (
            <li className="exam-questions-content-block-list" key={uuidv4()}>
-            <p>{e.difficulty}</p>
-            {e.images.length
-             ? e.images.map(image => (
-                <img style={{ width: 100 }} src={image} key={image} />
-               ))
-             : ""}
-            <h4
-             className={`${isDisabled ? "exam-questions-content-block-list-question-disabled" : ""} exam-questions-content-block-list-question`}
-            >
-             {e.question}
-            </h4>
+            <div className="exam-questions-content-block-list-question">
+             <h3>{e.question}</h3>
+             {e.images.length
+              ? e.images.map(image => (
+                 <img
+                  style={{ width: 100, margin: "0 6px" }}
+                  src={image}
+                  key={image}
+                 />
+                ))
+              : ""}
+             <ul>
+              {e.answers.map(answer => (
+               <li key={uuidv4()} style={{ display: "flex", gap: 12 }}>
+                <p>{answer.text}</p>
+                <p>{answer.isCurrect ? "✅ Верно" : "❌ Неверно"}</p>
+               </li>
+              ))}
+             </ul>
+            </div>
             <button
              className={`${isDisabled ? "exam-questions-content-block-list-delete-button-disabled" : ""} exam-questions-content-block-list-delete-button`}
              onClick={() => {

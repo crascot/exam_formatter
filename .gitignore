@@ -27,6 +27,9 @@ client/*.launch
 client/.settings/
 client/*.sublime-workspace
 
+.env
+.env.*
+
 # Server NestJS
 
 server/dist
@@ -50,17 +53,13 @@ server/*.launch
 server/.settings/
 server/*.sublime-workspace
 
+server/exam.db
+
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-
-.env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
 
 .temp
 .tmp

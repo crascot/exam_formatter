@@ -62,6 +62,25 @@ export const getExamForStudents = async (
  }
 };
 
+export const getExamTime = async (
+ req: Request,
+ res: Response,
+ next: NextFunction,
+) => {
+ try {
+  const results = examService.getExamTime(parseInt(req.params.id, 10));
+
+  if (!results) {
+   res.status(404).json({ error: "Экзамен не найден" });
+   return;
+  }
+
+  res.json(results);
+ } catch (error) {
+  next(error);
+ }
+};
+
 export const createExam = async (
  req: Request,
  res: Response,

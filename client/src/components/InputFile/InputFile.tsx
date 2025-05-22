@@ -11,10 +11,6 @@ export const InputFile = ({
  onChange,
  accept = ".doc,.docx,.pdf,.txt",
 }: InputProps) => {
- if (accept !== ".doc,.docx,.pdf,.txt") {
-  console.log("accept in InputFile:", accept);
- }
-
  return (
   <div className="input-file">
    <input id={id} type="file" multiple accept={accept} onChange={onChange} />

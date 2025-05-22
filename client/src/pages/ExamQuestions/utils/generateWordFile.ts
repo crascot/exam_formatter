@@ -9,6 +9,8 @@ import {
 import { saveAs } from "file-saver";
 import { ExamType } from "../../../types/ExamTypes";
 import { generateTickets } from "../../../utils/generateTickets";
+import dayjs from "dayjs";
+import { createScaledImageRun } from "../../../utils/createScaledImageRun";
 
 const defaultRunOptions: IRunOptions = {
  font: "Times New Roman",
@@ -25,120 +27,141 @@ export const generateWordFile = async (
   desiredTicketsCount,
  );
 
- const doc = new Document({
-  sections: tickets.map((ticket, ticketIndex) => ({
-   properties: {
-    page: {
-     size: {
-      orientation: "landscape",
-     },
-    },
-   },
-   children: [
-    new Paragraph({
-     children: [
-      new TextRun({
-       ...defaultRunOptions,
-       text: "И. РАЗЗАКОВ АТЫНДАГЫ",
-       bold: true,
+ const sections = await Promise.all(
+  tickets.map(async (ticket, ticketIndex) => {
+   const questionParagraphs: Paragraph[] = [];
+
+   for (const [index, question] of ticket.entries()) {
+    const imageRuns = await Promise.all(
+     question.images.map(imageBase64 => createScaledImageRun(imageBase64)),
+    );
+
+    if (imageRuns.length > 0) {
+     questionParagraphs.push(
+      new Paragraph({
+       children: imageRuns,
+       alignment: AlignmentType.CENTER,
       }),
-      new TextRun({
-       ...defaultRunOptions,
-       text: " КЫРГЫЗ МАМЛЕКЕТТИК ТЕХНИКАЛЫК УНИВЕРСИТЕТИ",
-       bold: true,
-      }),
-     ],
-     alignment: "center",
-    }),
-    new Paragraph({
-     children: [
-      new TextRun({
-       ...defaultRunOptions,
-       text: "КЫРГЫЗСКИЙ ГОСУДАРСТВЕННЫЙ ТЕХНИЧЕСКИЙ УНИВЕРСИТЕТ ИМИ РАЗЗАКОВА",
-       bold: true,
-      }),
-     ],
-     alignment: "center",
-    }),
-    new Paragraph({
-     children: [
-      new TextRun({
-       ...defaultRunOptions,
-       text: "",
-      }),
-     ],
-    }),
-    new Paragraph({
-     children: [
-      new TextRun({
-       ...defaultRunOptions,
-       text: `Кафедры: ${content.department}`,
-      }),
-     ],
-    }),
-    new Paragraph({
-     children: [
-      new TextRun({
-       ...defaultRunOptions,
-       text: "",
-      }),
-     ],
-    }),
-    new Paragraph({
-     children: [
-      new TextRun({
-       ...defaultRunOptions,
-       text: `ЫМТЫКАНДЫК БЕЛЕТ №${ticketIndex + 1}`,
-       bold: true,
-      }),
-     ],
-     alignment: "center",
-    }),
-    new Paragraph({
-     children: [
-      new TextRun({
-       ...defaultRunOptions,
-       text: `ЭКЗАМЕНЦИОННЫЙ БИЛЕТ №${ticketIndex + 1}`,
-       bold: true,
-      }),
-     ],
-     alignment: "center",
-    }),
-    new Paragraph({
-     children: [
-      new TextRun({
-       ...defaultRunOptions,
-       text: "",
-      }),
-     ],
-    }),
-    new Paragraph({
-     children: [
-      new TextRun({
-       ...defaultRunOptions,
-       text: `По курсу: ${content.lesson}`,
-      }),
-     ],
-    }),
-    ...ticket.map(question => {
-     return new Paragraph({
+     );
+    }
+
+    questionParagraphs.push(
+     new Paragraph({
       children: [
        new TextRun({
         ...defaultRunOptions,
-        text: `${question.question}`,
+        text: `Вопрос ${index + 1}: ${question.question}`,
        }),
       ],
       alignment: AlignmentType.LEFT,
-     });
-    }),
-   ],
-  })),
- });
+     }),
+    );
 
- Packer.toBlob(doc).then(blob => {
-  saveAs(
-   blob,
-   `${content.department}_${content.course}_exam_${new Date().toISOString()}.docx`,
-  );
- });
+    questionParagraphs.push(
+     new Paragraph({
+      children: [new TextRun({ text: "" })],
+     }),
+    );
+   }
+
+   return {
+    properties: {
+     page: {
+      size: {
+       orientation: "landscape",
+      },
+     },
+    },
+    children: [
+     new Paragraph({
+      children: [
+       new TextRun({
+        ...defaultRunOptions,
+        text: "И. РАЗЗАКОВ АТЫНДАГЫ",
+        bold: true,
+       }),
+       new TextRun({
+        ...defaultRunOptions,
+        text: " КЫРГЫЗ МАМЛЕКЕТТИК ТЕХНИКАЛЫК УНИВЕРСИТЕТИ",
+        bold: true,
+       }),
+      ],
+      alignment: "center",
+     }),
+     new Paragraph({
+      children: [
+       new TextRun({
+        ...defaultRunOptions,
+        text:
+         "КЫРГЫЗСКИЙ ГОСУДАРСТВЕННЫЙ ТЕХНИЧЕСКИЙ УНИВЕРСИТЕТ ИМИ РАЗЗАКОВА",
+        bold: true,
+       }),
+      ],
+      alignment: "center",
+     }),
+     new Paragraph({ children: [new TextRun({ text: "" })] }),
+     new Paragraph({
+      children: [
+       new TextRun({
+        ...defaultRunOptions,
+        text: `Кафедры: ${content.department}`,
+       }),
+      ],
+     }),
+     new Paragraph({ children: [new TextRun({ text: "" })] }),
+     new Paragraph({
+      children: [
+       new TextRun({
+        ...defaultRunOptions,
+        text: `ЫМТЫКАНДЫК БЕЛЕТ №${ticketIndex + 1}`,
+        bold: true,
+       }),
+      ],
+      alignment: "center",
+     }),
+     new Paragraph({
+      children: [
+       new TextRun({
+        ...defaultRunOptions,
+        text: `ЭКЗАМЕНЦИОННЫЙ БИЛЕТ №${ticketIndex + 1}`,
+        bold: true,
+       }),
+      ],
+      alignment: "center",
+     }),
+     new Paragraph({ children: [new TextRun({ text: "" })] }),
+     new Paragraph({
+      children: [
+       new TextRun({
+        ...defaultRunOptions,
+        text: `По дисциплине: ${content.lesson}`,
+       }),
+      ],
+     }),
+     new Paragraph({
+      children: [
+       new TextRun({
+        ...defaultRunOptions,
+        text: `Курс: ${content.course}`,
+       }),
+      ],
+     }),
+     new Paragraph({ children: [new TextRun({ text: "" })] }),
+
+     ...questionParagraphs,
+    ],
+   };
+  }),
+ );
+
+ const doc = new Document({ sections } as any);
+
+ const blob = await Packer.toBlob(doc);
+
+ saveAs(
+  blob,
+  `${content.department}_${content.course}_${dayjs(new Date()).format(
+   "DD.MM.YYYY",
+  )}.docx`,
+ );
 };

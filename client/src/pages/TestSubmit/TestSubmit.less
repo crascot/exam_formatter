@@ -1,28 +1,201 @@
 @import url("../../styles/pallete.less");
+@import url("../../styles/font-size.less");
 
-.student-name-input {
- width: 100%;
- padding: 10px;
- margin-bottom: 30px;
- border: 1px solid @pallete-gray;
- border-radius: 8px;
- font-size: 16px;
- background-color: @pallete-background;
- color: @pallete-white;
-}
+.test {
+ position: relative;
 
-.submit-button {
- margin-top: 40px;
- padding: 12px 20px;
- background-color: @pallete-blue;
- color: @pallete-white;
- font-size: 16px;
- border: none;
- border-radius: 10px;
- cursor: pointer;
- transition: 0.3s;
+ &-form {
+  padding-top: 20px !important;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 
- &:hover {
-  background-color: @pallete-green;
+  &-block,
+  &-header {
+   background-color: @pallete-white;
+   padding: 10px 20px;
+   border: 1px solid @pallete-beige;
+   border-radius: 10px;
+   display: flex;
+   flex-direction: column;
+   gap: 12px;
+
+   * {
+    color: @pallete-background;
+   }
+
+   p {
+    color: @pallete-gray;
+   }
+
+   &-input {
+    width: 100%;
+    height: 40px;
+    border: 1px solid @pallete-gray;
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: @pallete-white;
+    color: @pallete-background;
+    outline: none;
+    padding-left: 10px;
+   }
+
+   &-images {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    img {
+     width: 49%;
+    }
+   }
+
+   .test-form-block-answers {
+    --clr-primary: @pallete-gray;
+    --clr-hover: @pallete-blue;
+    --clr-checked: @pallete-blue-2;
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    .test-form-block-answers-answer {
+     --clr-current: var(--clr-primary);
+
+     display: flex;
+     align-items: center;
+     gap: 0.5rem;
+     cursor: pointer;
+     color: var(--clr-current);
+     transition: color 150ms ease-in-out;
+
+     input[type="radio"],
+     input[type="checkbox"] {
+      appearance: none;
+      outline: none;
+      width: 1.5rem;
+      height: 1.5rem;
+      padding: 0.25rem;
+      background: transparent;
+      border: 1px solid var(--clr-current);
+      display: grid;
+      place-content: center;
+      cursor: pointer;
+      position: relative;
+
+      &::after {
+       content: "";
+       position: absolute;
+       inset: 0.25rem;
+       opacity: 0;
+       scale: 0;
+       transition:
+        opacity 150ms ease-in-out,
+        scale 150ms ease-in-out;
+       background-color: var(--clr-checked);
+      }
+
+      &:hover,
+      &:focus-visible {
+       --clr-current: var(--clr-hover);
+
+       &::after {
+        opacity: 0.5;
+        scale: 1;
+        background-color: var(--clr-hover);
+       }
+      }
+
+      &:checked {
+       --clr-current: var(--clr-checked);
+
+       &::after {
+        opacity: 1;
+        scale: 1;
+       }
+      }
+     }
+
+     input[type="radio"] {
+      border-radius: 50%;
+
+      &::after {
+       border-radius: 50%;
+      }
+     }
+
+     input[type="checkbox"] {
+      border-radius: 0.25rem;
+
+      &::after {
+       border-radius: 0.25rem;
+      }
+     }
+
+     &:hover {
+      --clr-current: var(--clr-hover);
+     }
+
+     span {
+      user-select: none;
+     }
+    }
+   }
+
+   &-submit {
+    padding: 12px 20px;
+    background-color: @pallete-blue;
+    color: @pallete-white;
+    font-size: 16px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+
+    &:hover {
+     background-color: @pallete-green;
+    }
+   }
+  }
+
+  &-block:last-child {
+   margin-top: 20px;
+   margin-bottom: 40px;
+  }
+
+  &-header {
+   border-top: 15px solid @pallete-beige;
+
+   &-title {
+    text-align: center;
+   }
+  }
+ }
+
+ &-message {
+  width: 60%;
+  height: 20%;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  background-color: @pallete-white;
+  padding: 10px 20px;
+  border: 1px solid @pallete-blue;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  h1 {
+   color: @pallete-background;
+   text-align: center;
+  }
  }
 }

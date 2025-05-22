@@ -40,6 +40,7 @@ export const ResultsList = ({ responses }: ResultsListType) => {
       <div className="results__summary">
        Итог: {correctCount} из {total} правильных
       </div>
+      <div className="results__summary">Баллов: {correctCount}</div>
      </div>
     );
    })}

@@ -1,14 +1,25 @@
+import { v4 as uuidv4 } from "uuid";
 import { ChangeEvent, useEffect, useState } from "react";
-import { Container } from "../../components/Container";
 import "./TestSubmit.less";
 import { useParams } from "react-router-dom";
-import { UserSubmit, UserSubmitAnswer } from "../../types/UserSubmit";
+import { UserSubmit } from "../../types/UserSubmit";
 import { UserExamTest } from "../../types/UserExamTest";
 import { getTestForUser } from "../../api/getTestForUser";
 import { sendUserResult } from "../../api/sendUserResult";
+import dayjs from "dayjs";
+import { CountdownTimer } from "../../components/CountdownTimer";
+import { getTestTime } from "../../api/getTestTime";
 
 export const TestSubmit = () => {
  const { id } = useParams();
+
+ const [now, setNow] = useState(new Date());
+
+ const [testDate, setTestDate] = useState<{
+  startAt: string;
+  endAt: string;
+ } | null>(null);
+
  const [examState, setExamState] = useState<UserExamTest | null>(null);
  const [result, setResult] = useState<UserSubmit>({
   studentName: "",
@@ -23,26 +34,37 @@ export const TestSubmit = () => {
   checked: boolean,
  ) => {
   setResult(prev => {
-   const current = [...prev.answers];
-   let updatedAnswers: UserSubmitAnswer[];
+   const current = prev.answers;
 
    if (isMany) {
-    updatedAnswers = checked
-     ? [...current, { questionId, answerText }]
-     : current.filter(
-        a => !(a.questionId === questionId && a.answerText === answerText),
-       );
+    if (checked) {
+     const alreadyExists = current.some(
+      a => a.questionId === questionId && a.answerText === answerText,
+     );
+     if (!alreadyExists) {
+      return {
+       ...prev,
+       answers: [...current, { questionId, answerText }],
+      };
+     }
+     return prev;
+    } else {
+     return {
+      ...prev,
+      answers: current.filter(
+       a => !(a.questionId === questionId && a.answerText === answerText),
+      ),
+     };
+    }
    } else {
-    updatedAnswers = [
-     ...current.filter(a => a.questionId !== questionId),
-     { questionId, answerText },
-    ];
-   }
+    const updatedAnswers = current.filter(a => a.questionId !== questionId);
+    updatedAnswers.push({ questionId, answerText });
 
-   return {
-    ...prev,
-    answers: updatedAnswers,
-   };
+    return {
+     ...prev,
+     answers: updatedAnswers,
+    };
+   }
   });
  };
 
@@ -61,72 +83,138 @@ export const TestSubmit = () => {
   sendUserResult({
    id: Number(id),
    content: { ...result, submittedAt: new Date().toISOString() },
+  }).then(() => {
+   setExamState(null);
   });
  };
 
  useEffect(() => {
-  getTestForUser(Number(id)).then(res => {
-   setExamState(res);
-  });
+  getTestTime(Number(id))
+   .then(res => {
+    setTestDate(res);
+   })
+   .then(() => {
+    getTestForUser(Number(id)).then(res => {
+     setExamState(res);
+     setResult({
+      studentName: "",
+      submittedAt: new Date().toISOString(),
+      answers: [],
+     });
+    });
+   });
  }, []);
 
  useEffect(() => {
-  console.log(result);
- }, [result]);
+  const interval = setInterval(() => {
+   setNow(new Date());
+  }, 1000);
+
+  return () => clearInterval(interval);
+ }, []);
+
+ if (!testDate) {
+  return (
+   <div className="test-message">
+    <h1>Загрузка</h1>
+   </div>
+  );
+ }
+
+ if (now < new Date(testDate.startAt)) {
+  return (
+   <div className="test-message">
+    <h1>Тест начнется {dayjs(testDate.startAt).format("HH:mm DD.MM.YYYY")}</h1>
+   </div>
+  );
+ }
+
+ if (now > new Date(testDate.endAt)) {
+  return (
+   <div className="test-message">
+    <h1>Тест завершен {`:(`}</h1>
+   </div>
+  );
+ }
 
  return (
-  <Container>
-   <div className="exam-form">
-    <h1 className="exam-title">{examState?.exam.name}</h1>
-
-    <input
-     type="text"
-     className="student-name-input"
-     placeholder="Введите ваше имя"
-     value={result.studentName}
-     onChange={handleNameChange}
-    />
-
-    {examState?.questions.map(q => (
-     <div key={q.id} className="question-block">
-      <p className="question-text">{q.question}</p>
-      {q.images.map((src, i) => (
-       <img key={i} src={src} alt={`img-${i}`} className="question-image" />
-      ))}
-      <div className="answers">
-       {q.answers.map(a => {
-        const isChecked = result.answers.some(
-         r => r.questionId === q.id && r.answerText === a.text,
-        );
-
-        return (
-         <label key={a.id} className="answer-option">
-          <input
-           type={q.isManyCorrectAnswers ? "checkbox" : "radio"}
-           name={`question-${q.id}`}
-           value={a.text}
-           checked={isChecked}
-           onChange={() =>
-            handleAnswerChange(
-             q.id,
-             a.text,
-             q.isManyCorrectAnswers,
-             q.isManyCorrectAnswers,
-            )
-           }
-          />
-          <span>{a.text}</span>
-         </label>
-        );
-       })}
-      </div>
-     </div>
-    ))}
-
-    <button className="submit-button" onClick={handleSubmit}>
-     Отправить тест
-    </button>
+  <form className="test-form">
+   <div className="test-form-block">
+    <CountdownTimer endAt={testDate.endAt} />
    </div>
-  </Container>
+   <div className="test-form-header">
+    <h1 className="test-form-header-title">Онлайн тестирование</h1>
+    <h2>Кафедра: {examState?.exam.department}</h2>
+    <h2>Преподаватель: {examState?.exam.name}</h2>
+    <h2>Предмет: {examState?.exam.lesson}</h2>
+    <h2>Курс: {examState?.exam.course}</h2>
+   </div>
+   {examState && (
+    <div className="test-form-block">
+     <h3>Введите ваше имя</h3>
+     <input
+      type="text"
+      className="test-form-block-input"
+      placeholder="Введите ваше имя"
+      value={result.studentName}
+      onChange={handleNameChange}
+      required
+     />
+    </div>
+   )}
+   {examState?.questions.map(element => (
+    <div className="test-form-block" key={uuidv4()}>
+     <h3>{element.question}</h3>
+     <p>
+      {element.isManyCorrectAnswers
+       ? "Вопрос содержит несколько ответов"
+       : "Выберите один правильный ответ"}
+     </p>
+     <div className="test-form-block-images">
+      {element.images.map(image => (
+       <img className="test-form-block-image" src={image} key={uuidv4()} />
+      ))}
+     </div>
+     <div className="test-form-block-answers">
+      {element.answers.map(answer => {
+       const isChecked = result.answers.some(
+        result =>
+         result.questionId === element.id && result.answerText === answer.text,
+       );
+
+       return (
+        <label key={answer.id} className="test-form-block-answers-answer">
+         <input
+          type={element.isManyCorrectAnswers ? "checkbox" : "radio"}
+          name={`question-${element.id}`}
+          value={answer.text}
+          checked={isChecked}
+          onChange={e =>
+           handleAnswerChange(
+            element.id,
+            answer.text,
+            element.isManyCorrectAnswers,
+            e.target.checked,
+           )
+          }
+          required
+         />
+         <span>{answer.text}</span>
+        </label>
+       );
+      })}
+     </div>
+    </div>
+   ))}
+   {examState && (
+    <div className="test-form-block">
+     <input
+      className="test-form-block-submit"
+      type="submit"
+      onClick={handleSubmit}
+     />
+    </div>
+   )}
+  </form>
  );
 };
