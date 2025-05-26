@@ -6,6 +6,9 @@ import { generateWordFile } from "./utils/generateWordFile";
 import { Container } from "../../components/Container";
 import { ExamType, Question } from "../../types/ExamTypes";
 import { Form } from "../../components/Form/Form";
+import { generateExamWithGemini } from "../../api/generateExamWithGemini";
+import { LoaderModal } from "../../components/LoaderModal";
+import AIIcon from "../../icons/svg/ai-icon.svg";
 
 const initialExam: ExamType = {
  department: "",
@@ -18,6 +21,7 @@ const initialExam: ExamType = {
 };
 
 export const ExamQuestions = () => {
+ const [isLoading, setIsLoading] = useState<boolean>(false);
  const [content, setContent] = useState<ExamType>(initialExam);
  const [disabledIndexes, setDisabledIndexes] = useState<number[]>([]);
 
@@ -58,11 +62,62 @@ export const ExamQuestions = () => {
   generateWordFile(filteredContent, ticketCount);
  };
 
+ const generateExam = async () => {
+  const { lesson, course, config } = content;
+  const totalQuestions =
+   config["Легкий"] + config["Средний"] + config["Сложный"];
+
+  if (!lesson || !course) {
+   alert("Пожалуйста, заполните все поля формы.");
+   return;
+  }
+
+  if (totalQuestions < 5) {
+   alert(
+    "Минимальное количество вопросов - 5. Пожалуйста, измените настройки сложности.",
+   );
+   return;
+  }
+
+  setIsLoading(true);
+  generateExamWithGemini({
+   lesson,
+   course,
+   config,
+  })
+   .then((res: any) => {
+    console.log(res);
+    setContent({
+     ...content,
+     questions: res.map((question: Question) => ({
+      ...question,
+      images: question.images || [],
+     })),
+    });
+   })
+   .catch(() => {
+    console.error("Ошибка при генерации экзамена, попробуйте еще раз");
+   })
+   .finally(() => {
+    setIsLoading(false);
+   });
+ };
+
  return (
   <Container>
    <div className="exam-questions">
     <h1>Заполните форму и загрузите файлы с вопросами</h1>
     <Form state={content} setState={setContent} />
+    <button
+     onClick={generateExam}
+     className="exam-questions-generate-questions"
+    >
+     <AIIcon />
+     Сгенерировать при помощи ИИ
+    </button>
+    <p className="exam-questions-alert">
+     ВАЖНО! Вопросы могут не совпадать или быть некорректными
+    </p>
 
     {JSON.stringify(content) !== JSON.stringify(initialExam) ? (
      <motion.div
@@ -139,6 +194,7 @@ export const ExamQuestions = () => {
      ""
     )}
    </div>
+   {isLoading && <LoaderModal />}
   </Container>
  );
 };
