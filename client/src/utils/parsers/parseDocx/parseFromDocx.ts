@@ -6,10 +6,11 @@ import { parseHtmlToSequence } from "./utils/parseHtmlToSequence";
 export const parseFromDocx = (
  html: string,
  difficulty: Difficulty,
+ isTest = false,
  prev?: Question[],
 ): Question[] => {
  const sequence: ParsedItem[] = parseHtmlToSequence(html);
- const parsed = parseCommon({ sequence, isSequence: true }, difficulty);
+ const parsed = parseCommon({ sequence, isSequence: true }, difficulty, isTest);
 
  return [...parsed, ...(prev || [])];
 };

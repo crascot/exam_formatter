@@ -4,6 +4,7 @@ import { parseCommon } from "../../parseCommon";
 export const parseFromTxt = (
  input: string,
  difficulty: Difficulty,
+ isTest = false,
  prev?: Question[],
 ): Question[] => {
  const lines = input
@@ -11,7 +12,7 @@ export const parseFromTxt = (
   .map(line => line.trim())
   .filter(Boolean);
 
- const parsed = parseCommon({ lines }, difficulty);
+ const parsed = parseCommon({ lines }, difficulty, isTest);
 
  return [...parsed, ...(prev || [])];
 };

@@ -96,7 +96,7 @@ export const ExamQuestions = () => {
     });
    })
    .catch(() => {
-    console.error("Ошибка при генерации экзамена, попробуйте еще раз");
+    alert("Ошибка при генерации экзамена, попробуйте еще раз");
    })
    .finally(() => {
     setIsLoading(false);

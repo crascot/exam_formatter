@@ -22,5 +22,5 @@ type UserExamTestQuestion = {
 type UserExamTestAnswer = {
  id: number;
  text: string;
- isCurrect: number;
+ //  isCurrect: number;
 };

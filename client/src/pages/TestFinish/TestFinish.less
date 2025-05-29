@@ -1,0 +1,23 @@
+@import url("../../styles/pallete.less");
+
+.test-finish-container {
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ height: 100vh;
+
+ &-block {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background-color: @pallete-white;
+  border-radius: 10px;
+  padding: 10px;
+
+  h2,
+  h3 {
+   color: @pallete-background;
+   text-align: center;
+  }
+ }
+}

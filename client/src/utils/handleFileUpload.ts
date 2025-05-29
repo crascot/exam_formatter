@@ -6,6 +6,7 @@ export const handleFileUpload = async (
  event: ChangeEvent<HTMLInputElement>,
  setState: Dispatch<SetStateAction<any>>,
  difficulty: Difficulty,
+ isTest: boolean = false,
 ) => {
  const files = Array.from(event.target.files || []);
  if (files.length === 0) return;
@@ -30,7 +31,7 @@ export const handleFileUpload = async (
    let newQuestions = [...prev.questions];
 
    for (const fileText of parsedFiles) {
-    newQuestions = parser(fileText, difficulty, newQuestions);
+    newQuestions = parser(fileText, difficulty, isTest, newQuestions);
    }
 
    return {

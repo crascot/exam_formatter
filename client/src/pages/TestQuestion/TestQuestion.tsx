@@ -40,32 +40,26 @@ export const TestQuestion = () => {
   if (!filteredContent) {
    return;
   }
-  const hasEmptyAnswers = content.questions.some(
-   question => question.answers.length === 0,
-  );
-  const hasNoCorrectAnswer = content.questions.some(question =>
-   question.answers.every(answer => !answer.isCurrect),
-  );
+  for (const question of content.questions) {
+   if (question.answers.length === 0) {
+    alert("Есть вопросы без ответов.");
+    return;
+   }
 
-  if (hasEmptyAnswers) {
-   alert("Есть вопросы без ответов.");
-   return;
-  }
-
-  if (hasNoCorrectAnswer) {
-   alert("Есть вопросы без правильного ответа.");
-   return;
+   const hasCorrect = question.answers.some(answer => answer.isCurrect);
+   if (!hasCorrect) {
+    alert("Есть вопросы без правильного ответа.");
+    return;
+   }
   }
 
   addNewTests({ content })
    .then(res => {
-    console.log(res);
-
     setLinks(res);
     setIsModalOpen(true);
    })
    .catch(err => {
-    console.error(err);
+    console.error("Ошибка при создании теста:", err);
    });
  };
 

@@ -23,9 +23,9 @@ export interface QuestionImageRow {
 
 export interface AnswerRow {
  id: number;
- question_id: number;
+ //  question_id: number;
  text: string;
- isCurrect: number;
+ isCurrect?: number;
 }
 
 export interface SubmissionRow {

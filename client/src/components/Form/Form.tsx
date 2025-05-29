@@ -29,7 +29,7 @@ export const Form = ({ state, setState, showTestLabels = false }: FormType) => {
   difficulty: Difficulty,
  ) => {
   setIsLoading(true);
-  await handleFileUpload(e, setState, difficulty);
+  await handleFileUpload(e, setState, difficulty, showTestLabels);
   setIsLoading(false);
  };
 

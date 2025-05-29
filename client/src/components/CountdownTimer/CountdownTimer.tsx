@@ -3,11 +3,17 @@ import "./CountdownTimer.less";
 
 type CountdownTimerType = {
  endAt: string;
+ showEndMessage?: boolean;
+ text?: string;
 };
 
 const pad = (num: number) => String(num).padStart(2, "0");
 
-export const CountdownTimer = ({ endAt }: CountdownTimerType) => {
+export const CountdownTimer = ({
+ endAt,
+ showEndMessage = true,
+ text,
+}: CountdownTimerType) => {
  const [timeLeft, setTimeLeft] = useState<string>("");
 
  useEffect(() => {
@@ -38,7 +44,7 @@ export const CountdownTimer = ({ endAt }: CountdownTimerType) => {
  if (timeLeft === "00:00:00") {
   return (
    <div className="count-time">
-    <p>Тест завершен</p>
+    {showEndMessage ? <p>Тест завершен</p> : ""}
    </div>
   );
  }
@@ -46,7 +52,7 @@ export const CountdownTimer = ({ endAt }: CountdownTimerType) => {
  return (
   <div className="count-time">
    <p>
-    ⏳ Тест завершится через: <strong>{timeLeft}</strong>
+    {text || "⏳ Тест завершится через:"} <strong>{timeLeft}</strong>
    </p>
   </div>
  );

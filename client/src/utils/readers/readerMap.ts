@@ -16,6 +16,8 @@ type ReaderMapType = {
   // eslint-disable-next-line no-unused-vars
   difficulty: Difficulty,
   // eslint-disable-next-line no-unused-vars
+  isTest: boolean,
+  // eslint-disable-next-line no-unused-vars
   prev?: Question[],
  ) => Question[];
 };

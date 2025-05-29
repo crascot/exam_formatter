@@ -181,10 +181,14 @@ export const getExamForStudents = (
 
   const imagesResult = images.map(img => img.url);
 
+  const answersResult: Omit<AnswerRow, "isCurrect">[] = answers.map(
+   ({ isCurrect, ...rest }) => rest,
+  );
+
   return {
    id: question.id,
    question: question.question,
-   answers,
+   answers: answersResult,
    isManyCorrectAnswers: correctCount > 1,
    images: imagesResult,
   };

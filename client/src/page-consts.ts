@@ -4,6 +4,7 @@ class PageConstsClass {
  TEST_QUESTION = "/test-questions";
  TEACHER_RESULTS = "/teacher-results/:id";
  TEST_SUBMIT = "/test-submit/:id";
+ TEST_FINISH = "/test-finish";
  NOT_FOUND = "*";
 }
 

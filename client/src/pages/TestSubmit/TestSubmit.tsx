@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import "./TestSubmit.less";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { UserSubmit } from "../../types/UserSubmit";
 import { UserExamTest } from "../../types/UserExamTest";
 import { getTestForUser } from "../../api/getTestForUser";
@@ -9,9 +9,11 @@ import { sendUserResult } from "../../api/sendUserResult";
 import dayjs from "dayjs";
 import { CountdownTimer } from "../../components/CountdownTimer";
 import { getTestTime } from "../../api/getTestTime";
+import { PageConsts } from "../../page-consts";
 
 export const TestSubmit = () => {
  const { id } = useParams();
+ const navigate = useNavigate();
 
  const [now, setNow] = useState(new Date());
 
@@ -75,7 +77,9 @@ export const TestSubmit = () => {
   }));
  };
 
- const handleSubmit = () => {
+ const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
+
   if (!result.studentName.trim()) {
    alert("Пожалуйста, введите имя.");
    return;
@@ -83,9 +87,12 @@ export const TestSubmit = () => {
   sendUserResult({
    id: Number(id),
    content: { ...result, submittedAt: new Date().toISOString() },
-  }).then(() => {
-   setExamState(null);
+  }).finally(() => {
+   navigate(PageConsts.TEST_FINISH, { replace: true });
   });
+  // .then(() => {
+  //  setExamState(null);
+  // });
  };
 
  useEffect(() => {
@@ -121,6 +128,9 @@ export const TestSubmit = () => {
   );
  }
 
+ const time = 3;
+ const extraTime = dayjs(testDate.endAt).add(time, "minutes");
+
  if (now < new Date(testDate.startAt)) {
   return (
    <div className="test-message">
@@ -132,13 +142,38 @@ export const TestSubmit = () => {
  if (now > new Date(testDate.endAt)) {
   return (
    <div className="test-message">
-    <h1>Тест завершен {`:(`}</h1>
+    <h1>Тест завершен</h1>
+    <CountdownTimer
+     endAt={extraTime.toISOString()}
+     showEndMessage={false}
+     text={`Через ${time} минуты тест будет закрыт для отправки.`}
+    />
+    {now < extraTime.toDate() ? (
+     <form onSubmit={handleSubmit}>
+      <div className="test-form-block" style={{ marginTop: 20 }}>
+       <h3>Укажите ваше имя</h3>
+       <input
+        type="text"
+        className="test-form-block-input"
+        placeholder="Введите ваше имя"
+        value={result.studentName}
+        onChange={handleNameChange}
+        required
+       />
+      </div>
+      <div className="test-form-block">
+       <input className="test-form-block-submit" type="submit" />
+      </div>
+     </form>
+    ) : (
+     ""
+    )}
    </div>
   );
  }
 
  return (
-  <form className="test-form">
+  <form className="test-form" onSubmit={handleSubmit}>
    <div className="test-form-block">
     <CountdownTimer endAt={testDate.endAt} />
    </div>
@@ -197,7 +232,7 @@ export const TestSubmit = () => {
             e.target.checked,
            )
           }
-          required
+          required={!element.isManyCorrectAnswers}
          />
          <span>{answer.text}</span>
         </label>
@@ -208,11 +243,7 @@ export const TestSubmit = () => {
    ))}
    {examState && (
     <div className="test-form-block">
-     <input
-      className="test-form-block-submit"
-      type="submit"
-      onClick={handleSubmit}
-     />
+     <input className="test-form-block-submit" type="submit" />
     </div>
    )}
   </form>

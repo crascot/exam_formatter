@@ -43,10 +43,40 @@ export const QuestionForm = ({ onSubmit }: QuestionFormProps) => {
  };
 
  const handleSubmit = () => {
-  if (!questionText || answers.length === 0) return;
+  const trimmedQuestion = questionText.trim();
+
+  if (!trimmedQuestion) {
+   alert("Вопрос не должен быть пустым.");
+   return;
+  }
+
+  if (answers.length === 0) {
+   alert("Добавьте хотя бы один ответ.");
+   return;
+  }
+
+  const hasEmptyAnswer = answers.some(answer => !answer.text.trim());
+  if (hasEmptyAnswer) {
+   alert("Ответ не может быть пустым.");
+   return;
+  }
+
+  const uniqueAnswers = new Set(
+   answers.map(answer => answer.text.trim().toLowerCase()),
+  );
+  if (uniqueAnswers.size < answers.length) {
+   alert("Ответы не должны повторяться.");
+   return;
+  }
+
+  const hasCorrectAnswer = answers.some(answer => answer.isCurrect);
+  if (!hasCorrectAnswer) {
+   alert("Добавьте хотя бы один правильный ответ.");
+   return;
+  }
 
   onSubmit({
-   question: questionText,
+   question: trimmedQuestion,
    images,
    answers,
    difficulty: DifficultyEnum.EASY,

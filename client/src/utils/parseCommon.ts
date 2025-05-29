@@ -6,7 +6,11 @@ type Input =
  | { lines: string[]; images?: ImageData[]; isSequence?: false }
  | { sequence: ParsedItem[]; isSequence: true };
 
-export function parseCommon(input: Input, difficulty: Difficulty): Question[] {
+export function parseCommon(
+ input: Input,
+ difficulty: Difficulty,
+ isTest: boolean = false,
+): Question[] {
  const questions: Question[] = [];
  let currentQuestion: Question | null = null;
  let questionCounter = 1;
@@ -81,6 +85,21 @@ export function parseCommon(input: Input, difficulty: Difficulty): Question[] {
  }
 
  if (currentQuestion) questions.push(currentQuestion);
+
+ if (isTest) {
+  for (const question of questions) {
+   if (question.answers.length === 0) {
+    alert("В файле есть вопросы без ответов.");
+    return [];
+   }
+
+   const hasCorrect = question.answers.some(answer => answer.isCurrect);
+   if (!hasCorrect) {
+    alert("В файле есть вопросы без правильного ответа.");
+    return [];
+   }
+  }
+ }
 
  return [...questions];
 }
