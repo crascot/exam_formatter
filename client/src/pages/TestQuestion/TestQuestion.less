@@ -1,3 +1,5 @@
+@import url("../../styles/pallete.less");
+
 .modal-links {
  display: flex;
  flex-direction: column;
@@ -6,5 +8,18 @@
 
  a {
   width: max-content;
+ }
+}
+
+.exam-questions-content-block-list-disabled {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ margin-top: 20px;
+
+ h3,
+ p {
+  color: @pallete-gray !important;
+  text-decoration: line-through;
  }
 }

@@ -1,0 +1,77 @@
+@import url("../../../styles/pallete.less");
+@import url("../../../styles/font-size.less");
+
+.question-generator-modal {
+ display: flex;
+ align-items: center;
+ flex-direction: column;
+ gap: 12px;
+ padding: 12px 20px;
+
+ &__header {
+  text-align: center;
+ }
+
+ &__content {
+  max-width: 720px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 12px;
+
+  label {
+   width: inherit;
+
+   input,
+   textarea {
+    margin-top: 10px;
+    width: inherit;
+    height: 30px;
+    border-radius: 10px;
+    outline: none;
+    border: 3px solid @pallete-background;
+    padding-left: 10px;
+    font-size: @p;
+    color: @pallete-background;
+    transition: 0.4s;
+
+    &::placeholder {
+     color: @pallete-background;
+    }
+
+    &:focus {
+     transition: 0.4s;
+     border: 3px solid @pallete-gray;
+    }
+   }
+   textarea {
+    width: 100% !important;
+    height: 100px;
+    resize: none;
+   }
+  }
+ }
+
+ &__footer {
+  &-button {
+   color: @pallete-white !important;
+   max-width: max-content;
+   margin-top: 20px;
+   border-radius: 10px;
+   display: flex;
+   align-items: center;
+   gap: 8px;
+   background: @pallete-blue-2;
+   color: @pallete-white;
+   padding: 0.3rem 0.6rem;
+   font-size: 115%;
+   cursor: pointer;
+   border: none;
+
+   svg {
+    width: 30px;
+   }
+  }
+ }
+}

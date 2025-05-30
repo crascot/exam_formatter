@@ -1,13 +1,13 @@
 export const generateExamPrompt = ({
- lesson,
- course,
- config,
+ subject,
+ difficulty,
+ details,
 }: {
- lesson: string;
- course: number;
- config: { [key: string]: number };
+ subject: string;
+ details: string;
+ difficulty: { [key: string]: number };
 }) => {
- const difficultyEntries = Object.entries(config)
+ const difficultyEntries = Object.entries(difficulty)
   .map(([level, count]) => `- ${level}: ${count}`)
   .join("\n");
 
@@ -15,10 +15,11 @@ export const generateExamPrompt = ({
   Ты — генератор экзаменационных вопросов.
   
   На вход:
-  - Предмет: "${lesson}"
-  - Курс: ${course}
+  - Предмет: "${subject}"
   - Количество вопросов по уровням сложности:
   ${difficultyEntries}
+
+  - Больше информации: "${details}"
   
   Сгенерируй только **массив JSON-объектов**. Каждый элемент должен быть объектом следующего вида:
   

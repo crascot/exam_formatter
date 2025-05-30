@@ -10,6 +10,7 @@ import { addNewTests } from "../../api/addNewTest";
 import { LinkResponse } from "../../types/ExamResponse";
 import { QuestionForm } from "../../components/QuestionForm";
 import { CopyButton } from "../../components/CopyButton";
+import { QuestionGenerator } from "../../components/QuestionGenerator/QuestionGenerator";
 
 const initialExam: ExamType = {
  department: "",
@@ -100,7 +101,7 @@ export const TestQuestion = () => {
      <Form state={content} setState={setContent} showTestLabels />
      <h2>Или</h2>
      <QuestionForm onSubmit={handleAddQuestion} />
-
+     <QuestionGenerator setContent={setContent} forTest />
      {JSON.stringify(content) !== JSON.stringify(initialExam) ? (
       <motion.div
        initial={{ y: -50, opacity: 0 }}
@@ -117,7 +118,14 @@ export const TestQuestion = () => {
          {content.questions.map((e, index) => {
           const isDisabled = disabledIndexes.includes(index);
           return (
-           <li className="exam-questions-content-block-list" key={uuidv4()}>
+           <li
+            className={
+             isDisabled
+              ? "exam-questions-content-block-list-disabled"
+              : "exam-questions-content-block-list"
+            }
+            key={uuidv4()}
+           >
             <div className="exam-questions-content-block-list-question">
              <h3>{e.question}</h3>
              {e.images.length
