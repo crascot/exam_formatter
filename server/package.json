@@ -1,5 +1,5 @@
 {
- "name": "aliyadiplomserver",
+ "name": "examformatterserver",
  "version": "1.0.0",
  "main": "dist/server.js",
  "scripts": {
